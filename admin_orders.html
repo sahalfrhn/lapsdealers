@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="images/titlelogo.jpg" type="">
+  <title>LAPS | ADMIN PANEL</title>
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <!-- font awesome style -->
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin_orders.css">
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <style>
+    /* Simple Loading Spinner */
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #111;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .center-text {
+      text-align: center;
+      color: #555;
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<!-- header section -->
+<header class="header_section bg-light">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg custom_nav-container">
+      <a class="navbar-brand" href="index.html">
+        <img style="width: auto; height: 5em;" src="images/me.png-removebg-preview.png" alt="#" />
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+        <span class=""> </span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="Deals.html">Deals</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="faqs.html">FAQs</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="admin.html">Admin Panel</a>
+          <a class="dropdown-item" href="admin_orders.html">Orders</a>
+          </div>
+          </li>          
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- end header section -->
+
+
+<!-- 🔒 Login Section -->
+<div id="loginSection">
+  <h2>Admin Login</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- 📦 Orders Section -->
+<div id="ordersSection" style="display:none;">
+  <h2>All Orders 📦</h2>
+  <div class="loader" id="loadingSpinner"></div>
+  <table id="ordersTable">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Product</th>
+        <th>Customer</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwTpxFA_dfiHZu4wiyF3rKiIFO2ld5mIuTgzDoU_LzuXU-Kzg4Z-OcIyh3nr6ZpopdL/exec";
+
+// ✅ Simple Login
+function login() {
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+
+  if (user === "admin" && pass === "12345") {
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("ordersSection").style.display = "block";
+    loadOrders();
+  } else {
+    alert("Invalid credentials ❌");
+  }
+}
+
+async function loadOrders() {
+  const spinner = document.getElementById("loadingSpinner");
+  const tbody = document.querySelector("#ordersTable tbody");
+
+  tbody.innerHTML = "";
+  spinner.style.display = "block"; // show spinner
+
+  try {
+    const res = await fetch(API_URL + "?type=orders");
+    const orders = await res.json();
+
+    tbody.innerHTML = "";
+    spinner.style.display = "none"; // hide spinner
+
+    if (!orders || orders.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='7' class='center-text'>No orders found.</td></tr>";
+      return;
+    }
+
+    orders.forEach(o => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${o.orderId}</td>
+          <td>${o.productName}</td>
+          <td>${o.customerName}</td>
+          <td>${o.phone}</td>
+          <td>${o.address}</td>
+          <td>${o.status}</td>
+          <td>
+            <button onclick="updateStatus(this, '${o.orderId}', 'Delivered')">Delivered</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (error) {
+    spinner.style.display = "none";
+    tbody.innerHTML = "<tr><td colspan='7' class='center-text text-danger'>⚠️ Failed to load orders.</td></tr>";
+    console.error(error);
+  }
+}
+
+async function updateStatus(btn, orderId, newStatus) {
+  btn.disabled = true;
+  const originalText = btn.innerText;
+  btn.innerText = "Updating...";
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateStatus",
+        orderId: orderId,
+        status: newStatus
+      })
+    });
+
+    btn.innerText = "✅ Updated";
+    setTimeout(() => loadOrders(), 500);
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerText = originalText;
+    alert("❌ Failed to update. Try again.");
+  }
+}
+</script>
+
+      <!-- jQery -->
+      <script src="js/jquery-3.4.1.min.js"></script>
+      <!-- popper js -->
+      <script src="js/popper.min.js"></script>
+      <!-- bootstrap js -->
+      <script src="js/bootstrap.js"></script>
+      <!-- custom js -->
+      <script src="js/custom.js"></script>
+
+</body>
+</html>

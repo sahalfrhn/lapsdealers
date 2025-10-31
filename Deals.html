@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Site Metas -->
+      <meta name="keywords" content="" />
+      <meta name="description" content="" />
+      <meta name="author" content="" />
+      <link rel="shortcut icon" href="images/titlelogo.jpg" type="">
+      <title>LAPS | BOOK AND EARN</title>
+      <!-- bootstrap core css -->
+      <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+      <!-- font awesome style -->
+      <link href="css/font-awesome.min.css" rel="stylesheet" />
+      <!-- Custom styles for this template -->
+      <link href="css/style.css" rel="stylesheet" />
+      <!-- responsive style -->
+      <link href="css/responsive.css" rel="stylesheet" />
+<style>
+    .product {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 12px;
+        margin: 12px;
+    }
+    button {
+        padding: 10px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    button:hover{
+        background-color: darkgreen;
+    }
+</style>
+</head>
+<body>
+         <header class="header_section">
+            <div class="container">
+               <nav class="navbar navbar-expand-lg custom_nav-container ">
+                  <a class="navbar-brand" href="index.html"><img style="width: auto; height: 5em;" src="images/me.png.jpg" alt="#" /></a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class=""> </span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                     <ul class="navbar-nav">
+                        <li class="nav-item">
+                           <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item active">
+                           <a class="nav-link" href="Deals.html">Deals</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href="about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href="faqs.html">FAQs</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href="contact.html">Contact</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <a class="dropdown-item" href="admin.html">Admin Panel</a>
+                              <a class="dropdown-item" href="admin_orders.html">Orders</a>
+                              </div>
+                        </li>
+                     </ul>
+                  </div>
+               </nav>
+            </div>
+         </header>
+<div class="bg-dark text-white">
+<h2>Available Deals 🔥</h2>
+
+<div id="productList"></div>
+</div>
+
+      <!-- footer start -->
+      <footer>
+         <div class="container">
+            <div class="row">
+               <div class="col-md-4">
+                   <div class="full">
+                      <div class="logo_footer">
+                        <h2 style="font-weight: bold;">LAPS DEALERS</h2>
+                      </div>
+                      <div class="information_f">
+                        <p><strong>MOSTLY FOCUS:</strong> Malapuram, Calicut, Kannur, Ernakulam</p>
+                        <p><strong>TELEPHONE:</strong> +91 730 608 4919</p>
+                        <p><strong>EMAIL:</strong> lapxkannur@gmail.com</p>
+                      </div>
+                   </div>
+               </div>
+               <div class="col-md-8">
+                  <div class="row">
+                  <div class="col-md-7">
+                     <div class="row">
+                        <div class="col-md-6">
+                     <div class="widget_menu">
+                        <h3>Menu</h3>
+                        <ul>
+                           <li><a href="index.html">Home</a></li>
+                           <li><a href="Deals.html">Deals</a></li>
+                           <li><a href="about.html">About</a></li>
+                           <li><a href="faqs.html">FAQs</a></li>
+                           <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="widget_menu">
+                        <h3></h3>
+                        <ul>
+                           <li></li>
+                        </ul>
+                     </div>
+                  </div>
+                     </div>
+                  </div>     
+                  <div class="col-md-5">
+                     <div class="widget_menu">
+                        <h3>Join Our Brodcast</h3>
+                        <div class="information_f">
+                          <p>Join our Brodcast to get update on new deals</p>
+                        </div>
+                        <div class="form_sub">
+                           <form id="gform" action="">
+                              <fieldset>
+                                 <div class="field">
+                                    <input type="number" placeholder="Enter whatsapp number" name="Number" />
+                                    <input type="submit" value="Submit" />
+                                 </div>
+                              </fieldset>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </footer>
+      <!-- footer end -->
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz2m2ZPl1Tu4pzo_ot1t_sethuSeGT7vZ3BHH2gGWAzhHzQ_s2eaSKH-jrLNw1ijh41/exec";
+
+async function loadDeals() {
+    const list = document.getElementById("productList");
+    list.innerHTML = "<p>⏳ Loading deals...</p>";
+
+    try {
+        const res = await fetch(API_URL, { cache: "no-store" });
+        const products = await res.json();
+        const active = products.filter(p => p.status === "Active");
+
+        if (active.length === 0) {
+            list.innerHTML = "<p>No active deals found ❌</p>";
+            return;
+        }
+
+        // Use one join instead of repeated innerHTML for speed
+        list.innerHTML = active.map(p => `
+            <div class="product">
+                <h3>${p.productName}</h3>
+                <p><strong>Model:</strong> ${p.model}</p>
+                <p><strong>Booking Price:</strong> ₹${p.bookingPrice}</p>
+                <p><strong>Quantity:</strong> ${p.quantity}</p>
+                ${p.quantity > 0 
+                    ? `<button onclick="acceptDeal('${p.id}', '${p.productName}')">Accept Deal</button>` 
+                    : `<span style="color:red; font-weight:bold;">Sold Out ❌</span>`}
+            </div>
+        `).join('');
+    } catch (err) {
+        list.innerHTML = "<p style='color:red;'>⚠️ Failed to load deals. Please refresh.</p>";
+        console.error(err);
+    }
+}
+
+function acceptDeal(id, name) {
+    window.location.href = `deal-confirm.html?id=${id}&name=${encodeURIComponent(name)}`;
+}
+
+// Run after page loads
+document.addEventListener("DOMContentLoaded", loadDeals);
+</script>
+
+      <!-- jQery -->
+      <script src="js/jquery-3.4.1.min.js"></script>
+      <!-- popper js -->
+      <script src="js/popper.min.js"></script>
+      <!-- bootstrap js -->
+      <script src="js/bootstrap.js"></script>
+      <!-- custom js -->
+      <script src="js/custom.js"></script>
+</body>
+</html>

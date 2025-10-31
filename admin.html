@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="images/titlelogo.jpg" type="">
+<title>LAPS | ADMIN PANEL</title>
+<!-- bootstrap core css -->
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+<!-- font awesome style -->
+<link href="css/font-awesome.min.css" rel="stylesheet" />
+<!-- Custom styles for this template -->
+<link href="css/style.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css">
+<!-- responsive style -->
+<link href="css/responsive.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loaderOverlay">
+  <div class="loader"></div>
+</div>
+
+<!-- header section -->
+<header class="header_section bg-light">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg custom_nav-container">
+      <a class="navbar-brand" href="index.html">
+        <img style="width: auto; height: 5em;" src="images/me.png-removebg-preview.png" alt="#" />
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+        <span class=""> </span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="Deals.html">Deals</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="faqs.html">FAQs</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="admin.html">Admin Panel</a>
+          <a class="dropdown-item" href="admin_orders.html">Orders</a>
+          </div>
+          </li>          
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- end header section -->
+
+<!-- 🔒 Login Section -->
+<div id="loginSection">
+  <h2>Admin Login</h2>
+  <input type="text" id="adminUser" placeholder="Username">
+  <input type="password" id="adminPass" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- 📦 Admin Section -->
+<div id="adminSection" class="hidden" style="text-align: center;">
+    
+  <h2>Add Product</h2>
+  <input id="productName" placeholder="Product Name">
+  <input id="model" placeholder="Model">
+  <input id="link" placeholder="Purchase Link">
+  <input id="bookingPrice" placeholder="Booking Price">
+  <input id="commission" placeholder="Commission">
+  <input id="returnAmount" placeholder="Return Amount">
+  <input id="address" placeholder="Address">
+  <input id="quantity" placeholder="Quantity">
+  <button onclick="addProduct()">Add Product</button>
+
+  <h2>Product List</h2>
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>Name</th><th>Model</th><th>Qty</th><th>Status</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz2m2ZPl1Tu4pzo_ot1t_sethuSeGT7vZ3BHH2gGWAzhHzQ_s2eaSKH-jrLNw1ijh41/exec";
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "12345"; // Change later
+
+function showLoader() {
+  document.getElementById("loaderOverlay").style.display = "flex";
+}
+function hideLoader() {
+  document.getElementById("loaderOverlay").style.display = "none";
+}
+
+function login() {
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+
+  if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("adminSection").classList.remove("hidden");
+    loadProducts();
+  } else {
+    alert("Invalid username or password!");
+  }
+}
+
+async function addProduct() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerText = "Adding...";
+  showLoader();
+
+  const data = {
+    action: "add",
+    productName: productName.value.trim(),
+    model: model.value.trim(),
+    link: link.value.trim(),
+    bookingPrice: bookingPrice.value.trim(),
+    commission: commission.value.trim(),
+    returnAmount: returnAmount.value.trim(),
+    address: address.value.trim(),
+    quantity: quantity.value.trim()
+  };
+
+  if (!data.productName || !data.bookingPrice || !data.quantity) {
+    alert("Please fill required fields (Name, Booking Price, Quantity)");
+    btn.disabled = false;
+    btn.innerText = "Add Product";
+    hideLoader();
+    return;
+  }
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    alert("✅ Product Added Successfully!");
+    clearInputs();
+    loadProducts();
+  } catch (error) {
+    alert("❌ Error adding product. Please try again.");
+    console.error(error);
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Add Product";
+  hideLoader();
+}
+
+function clearInputs() {
+  document.querySelectorAll("#adminSection input").forEach(i => i.value = "");
+}
+
+async function loadProducts() {
+  const tbody = document.querySelector("#productTable tbody");
+  tbody.innerHTML = "<tr><td colspan='5'>⏳ Loading products...</td></tr>";
+  showLoader();
+
+  try {
+    const res = await fetch(API_URL);
+    const products = await res.json();
+    tbody.innerHTML = "";
+    products.forEach(p => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${p.productName}</td>
+          <td>${p.model}</td>
+          <td>${p.quantity}</td>
+          <td>${p.status}</td>
+          <td>
+            <button onclick="toggleStatus('${p.id}','${p.status}')">
+              ${p.status === "Active" ? "Deactivate" : "Activate"}
+            </button>
+          </td>
+        </tr>`;
+    });
+  } catch (err) {
+    tbody.innerHTML = "<tr><td colspan='5' style='color:red;'>⚠️ Failed to load products</td></tr>";
+    console.error(err);
+  }
+  hideLoader();
+}
+
+async function toggleStatus(id, status) {
+  showLoader();
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "updateStatus",
+      id: id,
+      status: status === "Active" ? "Inactive" : "Active"
+    })
+  });
+  hideLoader();
+  loadProducts();
+}
+</script>
+
+<!-- jQery -->
+<script src="js/jquery-3.4.1.min.js"></script>
+<!-- popper js -->
+<script src="js/popper.min.js"></script>
+<!-- bootstrap js -->
+<script src="js/bootstrap.js"></script>
+<!-- custom js -->
+<script src="js/custom.js"></script>
+
+</body>
+</html>

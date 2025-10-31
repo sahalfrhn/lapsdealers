@@ -1,0 +1,175 @@
+/* 🌙 Dark Theme Layout */
+
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  background: #0d1117;
+  margin: 0;
+  padding: 0;
+  color: #e6edf3;
+}
+
+/* ⚙️ Admin Section */
+#adminSection {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #161b22;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid #30363d;
+  animation: fadeIn 0.4s ease;
+}
+
+#adminSection h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #00d8ff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+#adminSection input {
+  width: 45%;
+  padding: 10px;
+  margin: 8px 1%;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #0d1117;
+  color: #e6edf3;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#adminSection input:focus {
+  border-color: #00d8ff;
+  outline: none;
+  box-shadow: 0 0 6px #00d8ff66;
+}
+
+#adminSection button {
+  background: linear-gradient(90deg, #00d8ff, #007acc);
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+#adminSection button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00d8ff66;
+}
+
+/* 🧾 Product Table */
+#productTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #0d1117;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#productTable th {
+  background-color: #00d8ff22;
+  padding: 10px;
+  border-bottom: 2px solid #30363d;
+  text-align: left;
+  color: #00d8ff;
+  font-weight: 600;
+}
+
+#productTable td {
+  padding: 10px;
+  border-bottom: 1px solid #30363d;
+  color: #e6edf3;
+}
+
+#productTable tr:hover {
+  background: #00d8ff11;
+  transition: 0.3s;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 600px) {
+  #adminSection input {
+    width: 100%;
+  }
+
+  #adminSection {
+    padding: 20px;
+  }
+
+  #adminSection h2 {
+    font-size: 18px;
+  }
+}
+
+/* 🔒 Admin Login Section */
+#loginSection {
+  max-width: 350px;
+  margin: 100px auto;
+  background: #161b22;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+  text-align: center;
+  border: 1px solid #30363d;
+  animation: fadeIn 0.4s ease;
+}
+
+#loginSection h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #00d8ff;
+  letter-spacing: 0.5px;
+}
+
+#loginSection input {
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #0d1117;
+  color: #e6edf3;
+  transition: 0.3s ease;
+}
+
+#loginSection input:focus {
+  border-color: #00d8ff;
+  outline: none;
+  box-shadow: 0 0 8px #00d8ff55;
+}
+
+#loginSection button {
+  width: 95%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  background: linear-gradient(90deg, #00d8ff, #007acc);
+  color: #fff;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#loginSection button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 10px #00d8ff55;
+}
+
+/* ✨ Smooth fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

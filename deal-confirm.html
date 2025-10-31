@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirm Deal</title>
+<style>
+    body { font-family: Arial; padding: 15px; }
+    input, button { width: 100%; padding: 10px; margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<h2>Confirm Deal</h2>
+<p id="productName"></p>
+
+<input id="customerName" placeholder="Your Name" required>
+<input id="phone" placeholder="Phone Number" required>
+<input id="address" placeholder="Address" required>
+
+<button onclick="submitOrder()">Submit Order ✅</button>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwVyrPwf4Uuu0abwZVMtAQEln315r_Ldr_mfz01rwmK56TuC9FFGbhakduQUTij2UYs/exec";
+
+const params = new URLSearchParams(window.location.search);
+const productId = params.get("id");
+let productName = params.get("name") || "";
+
+document.getElementById("productName").innerHTML =
+  "Confirm order for: <strong>" + productName + "</strong>";
+
+async function submitOrder() {
+  const nameVal = document.getElementById("customerName").value.trim();
+  const phoneVal = document.getElementById("phone").value.trim();
+  const addressVal = document.getElementById("address").value.trim();
+
+  if (!nameVal) return alert("Name is required");
+  if (!phoneVal) return alert("Phone is required");
+
+  const button = document.querySelector("button");
+  button.disabled = true;
+  button.textContent = "Submitting... ⏳";
+
+  const data = {
+    productId,
+    productName,
+    customerName: nameVal,
+    phone: phoneVal,
+    address: addressVal
+  };
+
+  // Send data but don't block UI while waiting
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    alert("✅ Deal confirmed!");
+    window.location.href = "deals.html";
+  })
+  .catch(() => {
+    alert("❌ Failed to submit. Try again.");
+    button.disabled = false;
+    button.textContent = "Submit Order ✅";
+  });
+}
+</script>
+
+</body>
+</html>
