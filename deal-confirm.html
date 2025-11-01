@@ -57,7 +57,7 @@ async function submitOrder() {
   })
   .then(() => {
     alert("✅ Deal confirmed!");
-    window.location.href = "deals.html";
+    window.location.href = window.location.origin + "/deals.html";
   })
   .catch(() => {
     alert("❌ Failed to submit. Try again.");
@@ -68,4 +68,5 @@ async function submitOrder() {
 </script>
 
 </body>
+
 </html>
